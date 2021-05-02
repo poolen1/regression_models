@@ -15,21 +15,18 @@ transaction_data = pd.read_json(transaction_data_file, lines=True)
 offer_completed = pd.DataFrame();
 offer_received = pd.DataFrame();
 
-"""
-for i in range(len(transaction_data)):
-    # print(transaction_data.loc[i]['event'])
-    if transaction_data.loc[i]['event'] == "transaction":
-        print(transaction_data.loc[i])
-"""
+offer_completed = transaction_data.loc[transaction_data['event'].shift(-1) == 'offer completed']
+offer_completed = offer_completed.loc[offer_completed['event'] == 'transaction']
+offer_completed = offer_completed.append(transaction_data.loc[transaction_data['event'] == 'offer completed'])
 
-for i in range(len(transaction_data)):
-    if transaction_data.loc[i]["event"] == "offer completed":
-        offer_completed.append(transaction_data.loc[i-1])
-        offer_completed.append(transaction_data.loc[i])
-    elif transaction_data.loc[i]["event"] == "offer received":
-        offer_received.append(transaction_data.loc[i])
+offer_completed = offer_completed.sort_index()
 
-print(offer_completed.to_string())
+offer_received = transaction_data.loc[transaction_data['event'] == 'offer received']
+
+offer_completed.to_csv(r'./data/offer_completed.csv')
+# offer_received.to_csv(r'./date/offer_received.csv')
+# print(offer_completed, len(offer_completed))
+# print(offer_received.to_string())
 # print(user_data.to_string())
 # print(promo_data.to_string())
 # print(transaction_data.to_string())
