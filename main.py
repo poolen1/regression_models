@@ -57,7 +57,7 @@ del data_set['event']
 data_set = data_set[['amount', 'time', 'gender', 'user_age', 'user_income', 'offer_type', 'offer_diff',
                      'offer_reward']]
 
-data_set['gender'] = data_set['gender'].replace(['None', 'M', 'F'], [0, 1, 2])
+data_set['gender'] = data_set['gender'].replace(['None', 'M', 'F', 'O'], [0, 1, 2, 3])
 data_set['offer_type'] = data_set['offer_type'].replace(['bogo', 'discount', 'informational'], [0, 1, 2])
 
 data_set.to_csv('./data/data_set.csv')
