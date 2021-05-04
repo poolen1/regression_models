@@ -1,6 +1,7 @@
 
 import pandas as pd
 import time
+import numpy as np
 
 
 start_time = time.time()
@@ -51,8 +52,19 @@ data_set['offer_reward'] = data_set['offer_id'].map(promo_data.set_index('id')['
 del data_set['person']
 del data_set['offer_id']
 del data_set['value']
+del data_set['event']
+
+data_set = data_set[['amount', 'time', 'gender', 'user_age', 'user_income', 'offer_type', 'offer_diff',
+                     'offer_reward']]
+
+y_list = data_set.loc[:, 'amount']
+y = y_list.values
+X_list = data_set.drop('amount', axis=1)
+X = np.array(X_list)
 
 # print(data_set.to_string())
+print(y)
+print(X)
 print("Length: ", len(data_set))
 
 end_time = time.time() - start_time
