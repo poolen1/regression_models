@@ -1,15 +1,23 @@
 from models import Model
 import pandas as pd
+import numpy as np
 
 # needs data to be added :) 
 def main():
-    features = 784
+    features = 8
     doML = Model(features)
 
-    X = pd.read_csv('X_test.csv')
-    Y = pd.read_csv('Y_test.csv')
+    data_set = pd.read_csv('data_set.csv')
+    y_list = data_set.loc[:, 'amount']
+    X_list = data_set.drop('amount', axis=1)
+    Y = y_list.values
+    X = np.array(X_list)
+
+    #print(X)
+    #print(Y)
+    #exit()
     
-    for i in range(0,3): # repeat each experiment 3 times
+    for i in range(0,1): # repeat each experiment 3 times
         print("Run # :"+str(i))
         print("Doing KNN")
         knn_results = doML.KNN(X, Y)
