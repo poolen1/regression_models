@@ -57,12 +57,16 @@ del data_set['event']
 data_set = data_set[['amount', 'time', 'gender', 'user_age', 'user_income', 'offer_type', 'offer_diff',
                      'offer_reward']]
 
+data_set.to_csv('./data/data_set.csv')
+
+"""
 y_list = data_set.loc[:, 'amount']
 X_list = data_set.drop('amount', axis=1)
 
 # X and y, training and test data
 y = y_list.values
 X = np.array(X_list)
+"""
 
 # print(data_set.to_string())
 # print(y)
