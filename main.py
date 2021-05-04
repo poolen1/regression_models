@@ -45,7 +45,7 @@ data_set['offer_id'] = data_set['offer_id'].shift(periods=-1)
 data_set['amount'] = [d.get('amount') for d in transactions.value]
 data_set = data_set[data_set.event != 'offer completed']
 
-data_set['offer_type'] = data_set['offer_id'].map(promo_data.set_index('id')['offer_type'])
+data_set['offer_type'] = data_set['offer_id'].map(promo_data.set_index('id')['offer_type']).astype('category')
 data_set['offer_diff'] = data_set['offer_id'].map(promo_data.set_index('id')['difficulty'])
 data_set['offer_reward'] = data_set['offer_id'].map(promo_data.set_index('id')['reward'])
 
@@ -56,6 +56,9 @@ del data_set['event']
 
 data_set = data_set[['amount', 'time', 'gender', 'user_age', 'user_income', 'offer_type', 'offer_diff',
                      'offer_reward']]
+
+data_set['gender'] = data_set['gender'].replace(['None', 'M', 'F'], [0, 1, 2])
+data_set['offer_type'] = data_set['offer_type'].replace(['bogo', 'discount', 'informational'], [0, 1, 2])
 
 data_set.to_csv('./data/data_set.csv')
 
