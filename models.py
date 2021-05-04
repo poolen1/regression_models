@@ -10,6 +10,8 @@ import pandas as pd
 class Model:
     def __init__(self, n_features):
         self.features = n_features
+        self.cv = KFold(n_splits=10, shuffle=True)
+        self.cross_scoring = ['neg_root_mean_squared_error', 'r2']
         # maybe add something here -> input data?
     
     def format_data(self, data):
@@ -29,10 +31,10 @@ class Model:
         #return adjusted
 
     def KNN(self, X, Y, total_neighbors = 7):
-        cv = KFold(n_splits=10, shuffle=True)
-        cross_scoring = ['neg_root_mean_squared_error', 'r2']
+        #cv = KFold(n_splits=10, shuffle=True)
+        #cross_scoring = ['neg_root_mean_squared_error', 'r2']
         model = KNeighborsRegressor(n_neighbors= total_neighbors)
-        scores = cross_val_score(model, X, Y, scoring=cross_scoring, cv=cv, n_jobs=-1)
+        scores = cross_val_score(model, X, Y, scoring=self.cross_scoring, cv=self.cv, n_jobs=-1)
         #knn.fit(x_train, y_train)
         #y_pred = knn.predict(x_test)
         #rmse = metrics.mean_squared_error(y_test, y_pred, squared=False) # root mean squared error
@@ -49,10 +51,10 @@ class Model:
         return model.best_params_
 
     def descent(self, X, Y):
-        cv = KFold(n_splits=10, shuffle=True)
-        cross_scoring = ['neg_root_mean_squared_error', 'r2']
+        #cv = KFold(n_splits=10, shuffle=True)
+        #cross_scoring = ['neg_root_mean_squared_error', 'r2']
         model = SGDRegressor()
-        scores = cross_val_score(model, X, Y, scoring=cross_scoring, cv=cv, n_jobs=-1)
+        scores = cross_val_score(model, X, Y, scoring=self.cross_scoring, cv=self.cv, n_jobs=-1)
         #for i in range(0, fold):
         #    model.partial_fit(x_train[i], y_train[i])
 
@@ -65,10 +67,10 @@ class Model:
         return scores
 
     def lRegression(self, X, Y):
-        cv = KFold(n_splits=10, shuffle=True)
-        cross_scoring = ['neg_root_mean_squared_error', 'r2']
+        #cv = KFold(n_splits=10, shuffle=True)
+        #cross_scoring = ['neg_root_mean_squared_error', 'r2']
         model = LinearRegression()
-        scores = cross_val_score(model, X, Y, scoring=cross_scoring, cv=cv, n_jobs=-1)
+        scores = cross_val_score(model, X, Y, scoring=self.cross_scoring, cv=self.cv, n_jobs=-1)
         #model.fit(x_train,y_train)
         #y_pred = model.predict(x_test)
         #rmse = metrics.mean_squared_error(y_test, y_pred, squared=False) # root mean squared error
@@ -105,8 +107,8 @@ class Model:
                                  epochs=15, 
                                  batch_size=500, 
                                  verbose=1)
-        cv = KFold(n_splits=10, shuffle=True)
-        results = cross_val_score(neural_network, X, Y, cv=cv)
+        #cv = KFold(n_splits=10, shuffle=True)
+        results = cross_val_score(neural_network, X, Y, cv=self.cv)
         return results
 
 
