@@ -3,6 +3,7 @@ from sklearn import metrics
 from sklearn.model_selection import GridSearchCV, KFold, cross_val_score
 from sklearn.linear_model import LinearRegression, SGDRegressor
 from keras import models, layers, optimizers
+from keras.wrappers.scikit_learn import KerasClassifier
 import numpy as np
 import pandas as pd
 
@@ -76,7 +77,15 @@ class Model:
         #r2 = 0 #placeholder
         return scores
 
-    def NeuralNetwork(self, x_train, y_train, x_test, y_test, n_shapes):
+    def createNetwork(self, n_features):
+        network = models.Sequential()
+        network.add(layers.Dense(128, activation='relu', input_shape=(n_features,)))
+        network.add(layers.Dense(64, activation='relu'))
+        network.add(layers.Dense(1, activation='linear'))
+        network.compile(optimizer='adam', loss='mse', metrics=["root_mean_squared_error", "mae"])
+        return network
+        
+    """ def NeuralNetwork(self, x_train, y_train, x_test, y_test, n_shapes):
         network = models.Sequential()
         network.add(layers.Dense(24, activation='relu', input_shape=(n_shapes,)))
         network.add(layers.Dense(24, activation='relu'))
@@ -89,8 +98,16 @@ class Model:
         # will need to take sqrt of these validation values ^
         #calculate r2 
         r2 = 0
-        return rmse
-        
+        return rmse """
+
+    def doNeuralNetwork(self, n_features, X, Y):
+        neural_network = KerasClassifier(build_fn=create_network, 
+                                 epochs=15, 
+                                 batch_size=500, 
+                                 verbose=1)
+        cv = KFold(n_splits=10, shuffle=True)
+        results = cross_val_score(neural_network, X, Y, cv=cv)
+        return results
 
 
 
