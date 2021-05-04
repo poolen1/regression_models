@@ -8,8 +8,8 @@ import numpy as np
 import pandas as pd
 
 class Model:
-    def __init__(self):
-        print("hello!")
+    def __init__(self, n_features):
+        self.features = n_features
         # maybe add something here -> input data?
     
     def format_data(self, data):
@@ -38,7 +38,7 @@ class Model:
         #rmse = metrics.mean_squared_error(y_test, y_pred, squared=False) # root mean squared error
         #print("KNN RSME = " + str(rmse))
         # do adjusted_r2
-        r2 = 0 #placeholder
+        #r2 = 0 #placeholder
         return scores
 
     def find_best_N(self, x_train, y_train): # will output best N -> not sure if we want to use this
@@ -77,9 +77,9 @@ class Model:
         #r2 = 0 #placeholder
         return scores
 
-    def createNetwork(self, n_features):
+    def createNetwork(self):
         network = models.Sequential()
-        network.add(layers.Dense(128, activation='relu', input_shape=(n_features,)))
+        network.add(layers.Dense(128, activation='relu', input_shape=(self.features,)))
         network.add(layers.Dense(64, activation='relu'))
         network.add(layers.Dense(1, activation='linear'))
         network.compile(optimizer='adam', loss='mse', metrics=["root_mean_squared_error", "mae"])
@@ -100,8 +100,8 @@ class Model:
         r2 = 0
         return rmse """
 
-    def doNeuralNetwork(self, n_features, X, Y):
-        neural_network = KerasClassifier(build_fn=create_network, 
+    def doNeuralNetwork(self, X, Y):
+        neural_network = KerasClassifier(build_fn=createNetwork, 
                                  epochs=15, 
                                  batch_size=500, 
                                  verbose=1)
