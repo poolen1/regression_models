@@ -57,8 +57,9 @@ del data_set['event']
 data_set = data_set[['amount', 'time', 'gender', 'user_age', 'user_income', 'offer_type', 'offer_diff',
                      'offer_reward']]
 
-data_set['gender'] = data_set['gender'].replace(['None', 'M', 'F', 'O'], [0, 1, 2, 3])
-data_set['offer_type'] = data_set['offer_type'].replace(['bogo', 'discount', 'informational'], [0, 1, 2])
+data_set['gender'] = data_set['gender'].replace([np.nan, 'M', 'F', 'O'], [0, 1, 2, 3])
+data_set['offer_type'] = data_set['offer_type'].replace([np.nan, 'bogo', 'discount', 'informational'], [0, 1, 2, 3])
+data_set = data_set.fillna(0)
 
 data_set.to_csv('./data/data_set.csv')
 
@@ -71,7 +72,7 @@ y = y_list.values
 X = np.array(X_list)
 """
 
-# print(data_set.to_string())
+print(data_set.to_string())
 # print(y)
 # print(X)
 # print("Length: ", len(data_set))
