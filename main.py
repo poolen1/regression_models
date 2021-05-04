@@ -58,14 +58,16 @@ data_set = data_set[['amount', 'time', 'gender', 'user_age', 'user_income', 'off
                      'offer_reward']]
 
 y_list = data_set.loc[:, 'amount']
-y = y_list.values
 X_list = data_set.drop('amount', axis=1)
+
+# X and y, training and test data
+y = y_list.values
 X = np.array(X_list)
 
 # print(data_set.to_string())
-print(y)
-print(X)
-print("Length: ", len(data_set))
+# print(y)
+# print(X)
+# print("Length: ", len(data_set))
 
 end_time = time.time() - start_time
 
