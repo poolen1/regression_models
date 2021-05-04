@@ -1,19 +1,11 @@
 
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
+import time
 
 
-def find_user(user_id, data):
+start_time = time.time()
 
-    the_user = data.loc[data['id'] == user_id]
-
-    return the_user
-
-
-def find_promo(promo_id):
-    pass
-
+print("Start Time: ", start_time)
 
 user_data_file = "./data/profile.json"
 promo_data_file = "./data/portfolio.json"
@@ -23,36 +15,48 @@ user_data = pd.read_json(user_data_file, lines=True)
 promo_data = pd.read_json(promo_data_file, lines=True)
 transaction_data = pd.read_json(transaction_data_file, lines=True)
 
-transactions = pd.DataFrame();
-offer_completed = pd.DataFrame();
-offer_received = pd.DataFrame();
+transactions = pd.DataFrame()
+offer_completed = pd.DataFrame()
+offer_received = pd.DataFrame()
 
-data_set = pd.DataFrame(columns=['amount', 'gender', 'user_age', 'account_age', 'user_income', 'transaction_time',
-                                 'offers', 'offer_type', 'offer_diff', 'offer_reward', 'percent_complete', 'channels'])
-
+# data_set = pd.DataFrame(columns=['amount', 'gender', 'user_age', 'user_income', 'transaction_time',
+#                                  'offer_type', 'offer_diff', 'offer_reward', 'percent_complete', 'channels'])
+data_set = pd.DataFrame()
 
 # Get all 'transaction' type rows
 transactions = transaction_data.loc[transaction_data['event'] == 'transaction']
 
-# Get all completed offer evens
+# Get all completed offer events
 offer_completed = transaction_data.loc[transaction_data['event'] == 'offer completed']
-# Sort 
 transactions = transactions.append(offer_completed)
-
 transactions = transactions.sort_index()
 
+data_set = transactions
 
+# User Data
+data_set['gender'] = data_set['person'].map(user_data.set_index('id')['gender'])
+data_set['user_age'] = data_set['person'].map(user_data.set_index('id')['age'])
+data_set['user_income'] = data_set['person'].map(user_data.set_index('id')['income'])
 
-offer_received = transaction_data.loc[transaction_data['event'] == 'offer received']
+# Promo Data
+data_set['offer_id'] = [d.get('offer_id') for d in transactions.value]
+data_set['offer_id'] = data_set['offer_id'].shift(periods=-1)
+data_set['amount'] = [d.get('amount') for d in transactions.value]
+data_set = data_set[data_set.event != 'offer completed']
 
-# transactions.to_csv(r'./data/transactions.csv')
-# offer_received.to_csv(r'./date/offer_received.csv')
-# print(offer_completed, len(offer_completed))
-# print(offer_received.to_string())
-# print(user_data.to_string())
-# print(promo_data.to_string())
-# print(transaction_data.to_string())
+data_set['offer_type'] = data_set['offer_id'].map(promo_data.set_index('id')['offer_type'])
+data_set['offer_diff'] = data_set['offer_id'].map(promo_data.set_index('id')['difficulty'])
+data_set['offer_reward'] = data_set['offer_id'].map(promo_data.set_index('id')['reward'])
 
-# print(transactions.to_string())
+del data_set['person']
+del data_set['offer_id']
+del data_set['value']
+
+# print(data_set.to_string())
+print("Length: ", len(data_set))
+
+end_time = time.time() - start_time
+
+print("Runtime: ", end_time)
 
 # EOF
