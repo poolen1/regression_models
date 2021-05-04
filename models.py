@@ -1,11 +1,12 @@
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn import metrics
-from sklearn.model_selection import GridSearchCV, KFold, cross_val_score
+from sklearn.model_selection import GridSearchCV, KFold, cross_val_score, cross_validate
 from sklearn.linear_model import LinearRegression, SGDRegressor
 from keras import models, layers, optimizers
 from keras.wrappers.scikit_learn import KerasClassifier
 import numpy as np
 import pandas as pd
+import tensorflow as tf
 
 class Model:
     def __init__(self, n_features):
@@ -34,7 +35,7 @@ class Model:
         #cv = KFold(n_splits=10, shuffle=True)
         #cross_scoring = ['neg_root_mean_squared_error', 'r2']
         model = KNeighborsRegressor(n_neighbors= total_neighbors)
-        scores = cross_val_score(model, X, Y, scoring=self.cross_scoring, cv=self.cv, n_jobs=-1)
+        scores = cross_validate(model, X, Y, scoring=self.cross_scoring, cv=self.cv, n_jobs=-1)
         #knn.fit(x_train, y_train)
         #y_pred = knn.predict(x_test)
         #rmse = metrics.mean_squared_error(y_test, y_pred, squared=False) # root mean squared error
@@ -54,7 +55,7 @@ class Model:
         #cv = KFold(n_splits=10, shuffle=True)
         #cross_scoring = ['neg_root_mean_squared_error', 'r2']
         model = SGDRegressor()
-        scores = cross_val_score(model, X, Y, scoring=self.cross_scoring, cv=self.cv, n_jobs=-1)
+        scores = cross_validate(model, X, Y, scoring=self.cross_scoring, cv=self.cv, n_jobs=-1)
         #for i in range(0, fold):
         #    model.partial_fit(x_train[i], y_train[i])
 
@@ -70,7 +71,7 @@ class Model:
         #cv = KFold(n_splits=10, shuffle=True)
         #cross_scoring = ['neg_root_mean_squared_error', 'r2']
         model = LinearRegression()
-        scores = cross_val_score(model, X, Y, scoring=self.cross_scoring, cv=self.cv, n_jobs=-1)
+        scores = cross_validate(model, X, Y, scoring=self.cross_scoring, cv=self.cv, n_jobs=-1)
         #model.fit(x_train,y_train)
         #y_pred = model.predict(x_test)
         #rmse = metrics.mean_squared_error(y_test, y_pred, squared=False) # root mean squared error
@@ -79,12 +80,12 @@ class Model:
         #r2 = 0 #placeholder
         return scores
 
-    def createNetwork(self):
+    def create_Network(self):
         network = models.Sequential()
         network.add(layers.Dense(128, activation='relu', input_shape=(self.features,)))
         network.add(layers.Dense(64, activation='relu'))
         network.add(layers.Dense(1, activation='linear'))
-        network.compile(optimizer='adam', loss='mse', metrics=["root_mean_squared_error", "mae"])
+        network.compile(optimizer='adam', loss='mse', metrics=[tf.keras.metrics.RootMeanSquaredError(), "mae"])
         return network
         
     """ def NeuralNetwork(self, x_train, y_train, x_test, y_test, n_shapes):
@@ -103,12 +104,13 @@ class Model:
         return rmse """
 
     def doNeuralNetwork(self, X, Y):
-        neural_network = KerasClassifier(build_fn=createNetwork, 
+        neural_network = KerasClassifier(build_fn = self.create_Network, 
                                  epochs=15, 
                                  batch_size=500, 
                                  verbose=1)
         #cv = KFold(n_splits=10, shuffle=True)
-        results = cross_val_score(neural_network, X, Y, cv=self.cv)
+        #results = cross_val_score(neural_network, X, Y, cv=self.cv)
+        results = cross_validate(neural_network, X, Y, scoring=self.cross_scoring, cv=self.cv)
         return results
 
 
