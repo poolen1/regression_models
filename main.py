@@ -75,12 +75,12 @@ data_set['social'] = offer_channels[3].apply(lambda i: i if i == 0 else 1)
 # data_set['offer_reward'] = data_set['offer_reward'].round(3)
 
 del data_set['person']
-del data_set['offer_id']
+# del data_set['offer_id']
 del data_set['value']
 del data_set['event']
 
 data_set = data_set[['amount', 'gender', 'user_income', 'offer_type', 'offer_diff',
-                     'offer_reward', 'web', 'mobile', 'social']]
+                     'offer_reward', 'web', 'mobile', 'social', 'offer_id']]
 
 data_set['gender'] = data_set['gender'].replace([np.nan, 'M', 'F', 'O'], [0, 1, 2, 3])
 data_set['offer_type'] = data_set['offer_type'].replace([np.nan, 'bogo', 'discount', 'informational'], [0, 1, 2, 3])
