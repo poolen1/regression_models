@@ -41,12 +41,12 @@ data_set['user_income'] = data_set['person'].map(user_data.set_index('id')['inco
 
 # Normalize user data
 max_age = data_set['user_age'].max()
-data_set['user_age'] = data_set['user_age']/max_age
-data_set['user_age'] = data_set['user_age'].round(3)
+# data_set['user_age'] = data_set['user_age']/max_age
+# data_set['user_age'] = data_set['user_age'].round(3)
 
 max_income = data_set['user_income'].max()
-data_set['user_income'] = data_set['user_income']/max_income
-data_set['user_income'] = data_set['user_income'].round(3)
+# data_set['user_income'] = data_set['user_income']/max_income
+# data_set['user_income'] = data_set['user_income'].round(3)
 
 # Promo Data
 data_set['offer_id'] = [d.get('offer_id') for d in transactions.value]
@@ -66,21 +66,21 @@ data_set['mobile'] = offer_channels[2].apply(lambda i: i if i == 0 else 1)
 data_set['social'] = offer_channels[3].apply(lambda i: i if i == 0 else 1)
 
 # Normalize promo data
-max_diff = data_set['offer_diff'].max()
-data_set['offer_diff'] = data_set['offer_diff']/max_diff
-data_set['offer_diff'] = data_set['offer_diff'].round(3)
+# max_diff = data_set['offer_diff'].max()
+# data_set['offer_diff'] = data_set['offer_diff']/max_diff
+# data_set['offer_diff'] = data_set['offer_diff'].round(3)
 
-max_reward = data_set['offer_reward'].max()
-data_set['offer_reward'] = data_set['offer_reward']/max_reward
-data_set['offer_reward'] = data_set['offer_reward'].round(3)
+# max_reward = data_set['offer_reward'].max()
+# data_set['offer_reward'] = data_set['offer_reward']/max_reward
+# data_set['offer_reward'] = data_set['offer_reward'].round(3)
 
 del data_set['person']
 del data_set['offer_id']
 del data_set['value']
 del data_set['event']
 
-data_set = data_set[['amount', 'time', 'gender', 'user_age', 'user_income', 'offer_type', 'offer_diff',
-                     'offer_reward', 'web', 'email', 'mobile', 'social']]
+data_set = data_set[['amount', 'gender', 'user_income', 'offer_type', 'offer_diff',
+                     'offer_reward', 'web', 'mobile', 'social']]
 
 data_set['gender'] = data_set['gender'].replace([np.nan, 'M', 'F', 'O'], [0, 1, 2, 3])
 data_set['offer_type'] = data_set['offer_type'].replace([np.nan, 'bogo', 'discount', 'informational'], [0, 1, 2, 3])
